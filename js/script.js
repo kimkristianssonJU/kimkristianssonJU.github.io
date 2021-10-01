@@ -1,8 +1,32 @@
-document.getElementById("progress-js").style.width = 35 + "%";
-document.getElementById("progress-html-css").style.width = 75 + "%";
-document.getElementById("progress-csharp").style.width = 50 + "%";
-document.getElementById("progress-cpp").style.width = 25 + "%";
+const gitApiUrl = "https://api.github.com/users/kimkristianssonJU/repos"
 
-document.getElementById("progress-swe").style.width = 100 + "%";
-document.getElementById("progress-eng").style.width = 65 + "%";
+fetchData = async(url) => {
+    const response = await fetch(url);
+    const data = response.json();
+    return data
+}
 
+customCreateElements = (tag, htmlClasses, parent) => {
+    element = document.createElement(tag);
+    htmlClasses.forEach(htmlClass => {
+        element.classList.add(htmlClass);
+    });
+    parent.appendChild(element);
+    return element;
+}
+
+createRepositoryList = async(url) => {
+    const myReposData = await fetchData(url);
+
+    let ulElement = customCreateElements("ul", ["list-group"], document.querySelector(".container"));
+
+    myReposData.forEach(repos => {
+        let liElement = customCreateElements("li", ["list-group-item"], ulElement);
+        let anchorElement = customCreateElements("a", [], liElement);
+        anchorElement.innerText = repos.name;
+        anchorElement.href = repos.html_url;
+
+    });
+}
+
+createRepositoryList(gitApiUrl);
